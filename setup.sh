@@ -1,25 +1,25 @@
 #!/bin/bash
 
 echo "Cloning device/xiaomi/cupid folder..."
-git clone git@github.com:Joshaby/android_device_xiaomi_cupid.git -b lineage-23.0 device/xiaomi/cupid
+git clone https://github.com/Joshaby/android_device_xiaomi_cupid.git -b lineage-23.0 device/xiaomi/cupid
 
 echo "Cloning device/xiaomi/sm8450-common folder..."
-git clone git@github.com:Joshaby/android_device_xiaomi_sm8450-common.git -b lineage-23.0 device/xiaomi/sm8450-common
+git clone https://github.com/Joshaby/android_device_xiaomi_sm8450-common device/xiaomi/sm8450-common
 
-echo "Cloning endor/xiaomi/sm8450-common..."
-git clone git@github.com:Joshaby/vendor_xiaomi_sm8450-common.git vendor/xiaomi/sm8450-common
+echo "Cloning vendor/xiaomi/sm8450-common..."
+git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git vendor/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/cupid folder..."
-git clone git@github.com:Joshaby/proprietary_vendor_xiaomi_cupid.git -b lineage-23.0 vendor/xiaomi/cupid
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_cupid.git -b lineage-23.0 vendor/xiaomi/cupid
 
 echo "Cloning vendor/xiaomi/miuicamera-cupid folder..."
-git clone https://git.mainlining.org/cupid-development/proprietary_vendor_xiaomi_miuicamera-cupid.git -b lineage-22.2 vendor/xiaomi/miuicamera-cupid
+git clone https://codeberg.org/dopaemon/proprietary_vendor_xiaomi_miuicamera-cupid.git -b lineage-22.2 vendor/xiaomi/miuicamera-cupid
 
 echo "Cloning device/xiaomi/miuicamera-cupid folder..."
 git clone https://github.com/cupid-development/android_device_xiaomi_miuicamera-cupid.git device/xiaomi/miuicamera-cupid
 
 echo "Cloning hardware/xiaomi folder..."
-git clone https://github.com/crdroidandroid/android_hardware_xiaomi.git -b 16.0 hardware/xiaomi
+git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware/xiaomi
 
 echo "Cloning hardware/dolby folder..."
 git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
@@ -28,10 +28,10 @@ echo "Cloning kernel/xiaomi/sm8450 folder..."
 git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450.git kernel/xiaomi/sm8450
 
 echo "Cloning kernel/xiaomi/sm8450-devicetrees folder..."
-git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
+git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
 
 echo "Cloning kernel/xiaomi/sm8450-modules folder..."
-git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450-modules.git kernel/xiaomi/sm8450-modules
+git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450-modules.git kernel/xiaomi/sm8450-modules
 
 echo "Cloning Wild Kernel Patches"
 git clone https://github.com/WildKernels/kernel_patches.git extras/ksu/wild-kernel-patches
@@ -46,6 +46,10 @@ curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/se
 echo "Apply latest SusFS"
 # Apply core SUSFS patches
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
+cd ../../../extras/ksu/susfs
+git checkout 8a76ba240d1f7315352b49d97d854a4b166e5b47
+cd ../../../kernel/xiaomi/sm8450
+
 patch -p1 -ui ../../../extras/ksu/susfs/kernel_patches/50_add_susfs_in_gki-android12-5.10.patch
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
 cp -f ../../../extras/ksu/susfs/kernel_patches/include/linux/* include/linux
@@ -55,9 +59,9 @@ cd Wild_KSU
 patch -p1 --forward < ../../../../extras/ksu/susfs/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch || true
 
 # Apply compatibility fixes
-patch -p1 --forward --fuzz=3 < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.11/fix_core_hook.c.patch
-patch -p1 --forward < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.11/fix_sucompat.c.patch
-patch -p1 --forward < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.11/fix_kernel_compat.c.patch
+patch -p1 --forward --fuzz=3 < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.12/fix_core_hook.c.patch
+patch -p1 --forward < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.12/fix_sucompat.c.patch
+patch -p1 --forward < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.12/fix_kernel_compat.c.patch
 
 echo "Apply Hooks Patches"
 cd ../
@@ -77,14 +81,14 @@ echo "CONFIG_KSU_KPROBES_HOOK=n" >> "$defconfig"
 
 # SUSFS Configuration
 echo "CONFIG_KSU_SUSFS=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> "$defconfig"
+echo "#CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> "$defconfig"
 
 # SUSFS Auto Mount Features
 echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y" >> "$defconfig"
 
 # SUSFS Advanced Features
@@ -98,3 +102,12 @@ echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$defconfig"
+
+# Build Optimization Configuration
+echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
+echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=n" >> "$defconfig"
+echo "CONFIG_OPTIMIZE_INLINING=y" >> "$defconfig"
+
+# LTO Configuration
+echo "CONFIG_LTO_CLANG=y" >> "$defconfig"
+echo "CONFIG_LTO_CLANG_THIN=y" >> "$defconfig"
