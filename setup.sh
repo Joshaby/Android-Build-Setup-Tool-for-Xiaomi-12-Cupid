@@ -71,8 +71,15 @@ echo "Apply Module Check Bypass"
 cd kernel
 sed -i '/bad_version:/{:a;n;/return 0;/{s/return 0;/return 1;/;b};ba}' module.c
 
-echo "Apply Kernel Configuration"
+echo "Apply Kernel Configuration and Performance Optimizations Patches"
 cd ..
+
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/optimized_mem_operations.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/file_struct_8bytes_align.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_cache_pressure.patch
+#sed -e 's/SYM_FUNC_START_PI(clear_page)/SYM_FUNC_START_PI(__pi_clear_page)/' ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align.patch > ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align__pi.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align.patch
+
 defconfig="./arch/arm64/configs/gki_defconfig"
 
 # KernelSU Core Configuration
@@ -107,7 +114,3 @@ echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$defconfig"
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=n" >> "$defconfig"
 echo "CONFIG_OPTIMIZE_INLINING=y" >> "$defconfig"
-
-# LTO Configuration
-echo "CONFIG_LTO_CLANG=y" >> "$defconfig"
-echo "CONFIG_LTO_CLANG_THIN=y" >> "$defconfig"
