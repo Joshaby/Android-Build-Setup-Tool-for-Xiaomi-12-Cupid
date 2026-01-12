@@ -40,32 +40,23 @@ echo "Apply ptrace patch for older kernels"
 cd kernel/xiaomi/sm8450
 patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
 
+echo "Cloning Wild Kernel Patches"
+git clone https://github.com/WildKernels/kernel_patches.git extras/ksu/wild-kernel-patches
+
+echo "Apply ptrace patch for older kernels"
+cd kernel/xiaomi/sm8450
+patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
+
 echo "Add Wild Kernel"
 curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s wild
 
 echo "Apply latest SusFS"
 # Apply core SUSFS patches
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
-cd ../../../extras/ksu/susfs
-git checkout 8a76ba240d1f7315352b49d97d854a4b166e5b47
-cd ../../../kernel/xiaomi/sm8450
 
-patch -p1 -ui ../../../extras/ksu/susfs/kernel_patches/50_add_susfs_in_gki-android12-5.10.patch
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
 cp -f ../../../extras/ksu/susfs/kernel_patches/include/linux/* include/linux
-
-# Apply KSU integration patches
-cd Wild_KSU
-patch -p1 --forward < ../../../../extras/ksu/susfs/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch || true
-
-# Apply compatibility fixes
-patch -p1 --forward --fuzz=3 < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.12/fix_core_hook.c.patch
-patch -p1 --forward < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.12/fix_sucompat.c.patch
-patch -p1 --forward < ../../../../extras/ksu/wild-kernel-patches/wild/susfs_fix_patches/v1.5.12/fix_kernel_compat.c.patch
-
-echo "Apply Hooks Patches"
-cd ../
-patch -p1 --forward -F 3 < ../../../extras/ksu/wild-kernel-patches/wild/hooks/scope_min_manual_hooks_v1.4.patch
+patch -p1 -ui ../../../extras/ksu/susfs/kernel_patches/50_add_susfs_in_gki-android12-5.10.patch
 
 echo "Apply Module Check Bypass"
 cd kernel
@@ -84,31 +75,11 @@ defconfig="./arch/arm64/configs/gki_defconfig"
 
 # KernelSU Core Configuration
 echo "CONFIG_KSU=y" >> "$defconfig"
-echo "CONFIG_KSU_KPROBES_HOOK=n" >> "$defconfig"
-
-# SUSFS Configuration
 echo "CONFIG_KSU_SUSFS=y" >> "$defconfig"
-echo "#CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> "$defconfig"
 
-# SUSFS Auto Mount Features
-echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y" >> "$defconfig"
-
-# SUSFS Advanced Features
-echo "CONFIG_KSU_SUSFS_SUS_KSTAT=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_SUS_OVERLAYFS=n" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> "$defconfig"
-
-# SUSFS Debugging and Security
-echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> "$defconfig"
-echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$defconfig"
+# Mountify Support
+echo "CONFIG_TMPFS_XATTR=y" >> "$defconfig"
+echo "CONFIG_TMPFS_POSIX_ACL=y" >> "$defconfig"
 
 # Build Optimization Configuration
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
