@@ -40,19 +40,15 @@ echo "Apply ptrace patch for older kernels"
 cd kernel/xiaomi/sm8450
 patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
 
-echo "Cloning Wild Kernel Patches"
-git clone https://github.com/WildKernels/kernel_patches.git extras/ksu/wild-kernel-patches
-
-echo "Apply ptrace patch for older kernels"
-cd kernel/xiaomi/sm8450
-patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
-
 echo "Add Wild Kernel"
 curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s wild
 
 echo "Apply latest SusFS"
 # Apply core SUSFS patches
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
+cd ../../../extras/ksu/susfs
+git checkout be8980fba5d35bfcb5bcb31ec334fd677802e0e5
+cd ../../../kernel/xiaomi/sm8450
 
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
 cp -f ../../../extras/ksu/susfs/kernel_patches/include/linux/* include/linux
