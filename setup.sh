@@ -47,7 +47,7 @@ echo "Apply latest SusFS"
 # Apply core SUSFS patches
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
 cd ../../../extras/ksu/susfs
-git checkout be8980fba5d35bfcb5bcb31ec334fd677802e0e5
+git checkout a4c34e5877163b434a00c32b67c4e637f85a4c66
 cd ../../../kernel/xiaomi/sm8450
 
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
@@ -58,14 +58,25 @@ echo "Apply Module Check Bypass"
 cd kernel
 sed -i '/bad_version:/{:a;n;/return 0;/{s/return 0;/return 1;/;b};ba}' module.c
 
-echo "Apply Kernel Configuration and Performance Optimizations Patches"
+echo "Apply BBG support"
 cd ..
+curl -LSs https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh | bash
+sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/selinux/selinux,baseband_guard/ } }' security/Kconfig
+
+echo "Apply Kernel Configuration Flags and Performance Optimizations Patches"
 
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/optimized_mem_operations.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/file_struct_8bytes_align.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_cache_pressure.patch
-#sed -e 's/SYM_FUNC_START_PI(clear_page)/SYM_FUNC_START_PI(__pi_clear_page)/' ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align.patch > ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align__pi.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_timeout_wakelocks_globally.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/f2fs_reduce_congestion.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/force_tcp_nodelay.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/int_sqrt.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/mem_opt_prefetch.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/minimise_wakeup_time.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_freeze_timeout.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_gc_thread_sleep_time.patch
 
 defconfig="./arch/arm64/configs/gki_defconfig"
 
@@ -76,6 +87,42 @@ echo "CONFIG_KSU_SUSFS=y" >> "$defconfig"
 # Mountify Support
 echo "CONFIG_TMPFS_XATTR=y" >> "$defconfig"
 echo "CONFIG_TMPFS_POSIX_ACL=y" >> "$defconfig"
+
+#BBG
+echo "CONFIG_BBG=y" >> "$defconfig"
+
+# Networking Configuration
+echo "CONFIG_IP_NF_TARGET_TTL=y" >> "$defconfig"
+echo "CONFIG_IP6_NF_TARGET_HL=y" >> "$defconfig"
+echo "CONFIG_IP6_NF_MATCH_HL=y" >> "$defconfig"
+
+# BBR TCP Congestion Control
+echo "CONFIG_TCP_CONG_ADVANCED=y" >> "$defconfig"
+echo "CONFIG_TCP_CONG_BBR=y" >> "$defconfig"
+echo "CONFIG_NET_SCH_FQ=y" >> "$defconfig"
+echo "CONFIG_TCP_CONG_BIC=n" >> "$defconfig"
+echo "CONFIG_TCP_CONG_WESTWOOD=n" >> "$defconfig"
+echo "CONFIG_TCP_CONG_HTCP=n" >> "$defconfig"
+
+# IPSet Support
+echo "CONFIG_IP_SET=y" >> "$defconfig"
+echo "CONFIG_IP_SET_MAX=65534" >> "$defconfig"
+echo "CONFIG_IP_SET_BITMAP_IP=y" >> "$defconfig"
+echo "CONFIG_IP_SET_BITMAP_IPMAC=y" >> "$defconfig"
+echo "CONFIG_IP_SET_BITMAP_PORT=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IP=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IPMARK=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IPPORT=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IPPORTIP=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IPPORTNET=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IPMAC=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_MAC=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_NETPORTNET=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_NET=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_NETNET=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_NETPORT=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_NETIFACE=y" >> "$defconfig"
+echo "CONFIG_IP_SET_LIST_SET=y" >> "$defconfig"
 
 # Build Optimization Configuration
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
