@@ -77,6 +77,18 @@ patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/mem_opt_pre
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/minimise_wakeup_time.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_freeze_timeout.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_gc_thread_sleep_time.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_limitation_scaling_min_freq.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/adjust_cpu_scan_order.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/avoid_extra_s2idle_wake_attempts.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/disable_cache_hot_buddy.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/f2fs_enlarge_min_fsync_blocks.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_ext4_default_commit_age.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_sk_mem_packets.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/re_write_limitation_scaling_min_freq.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_pci_pme_wakeups.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_irq_cpu_logspam.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_system_logspam.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/use_unlikely_wrap_cpufreq.patch
 
 defconfig="./arch/arm64/configs/gki_defconfig"
 
@@ -125,6 +137,14 @@ echo "CONFIG_IP_SET_HASH_NETIFACE=y" >> "$defconfig"
 echo "CONFIG_IP_SET_LIST_SET=y" >> "$defconfig"
 
 # Build Optimization Configuration
-echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
-echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=n" >> "$defconfig"
+echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=n" >> "$defconfig"
+echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=y" >> "$defconfig"
 echo "CONFIG_OPTIMIZE_INLINING=y" >> "$defconfig"
+
+echo "Change Kernel Name"
+
+# Kernel name
+echo 'CONFIG_LOCALVERSION=""' >> "$defconfig"
+echo "CONFIG_LOCALVERSION_AUTO=n" >> "$defconfig"
+echo 'res="${res/-gki+/}"' >> scripts/setlocalversion
+echo 'echo "$res-JoshaCore-WILDKSU+SUSFS"' >> scripts/setlocalversion
