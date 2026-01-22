@@ -94,7 +94,30 @@ defconfig="./arch/arm64/configs/gki_defconfig"
 
 # KernelSU Core Configuration
 echo "CONFIG_KSU=y" >> "$defconfig"
+echo "CONFIG_KSU_KPROBES_HOOK=n" >> "$defconfig"
+
+# SUSFS Configuration
 echo "CONFIG_KSU_SUSFS=y" >> "$defconfig"
+echo "#CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> "$defconfig"
+
+# SUSFS Auto Mount Features
+echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y" >> "$defconfig"
+
+# SUSFS Advanced Features
+echo "CONFIG_KSU_SUSFS_SUS_KSTAT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_SUS_OVERLAYFS=n" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> "$defconfig"
+
+# SUSFS Debugging and Security
+echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> "$defconfig"
 
 # Mountify Support
 echo "CONFIG_TMPFS_XATTR=y" >> "$defconfig"
@@ -147,4 +170,12 @@ echo "Change Kernel Name"
 echo 'CONFIG_LOCALVERSION=""' >> "$defconfig"
 echo "CONFIG_LOCALVERSION_AUTO=n" >> "$defconfig"
 echo 'res="${res/-gki+/}"' >> scripts/setlocalversion
-echo 'echo "$res-JoshaCore-WILDKSU+SUSFS"' >> scripts/setlocalversion
+sed -i 's/echo "$res"/res="${res\/-gki+\/}"\necho "$res-JoshaCore-WILDKSU+SUSFS"/' scripts/setlocalversion
+
+echo "Fix build for Clang r584948b(22.0.1)"
+
+echo 'KBUILD_CFLAGS += -Wuninitialized' >> Makefile
+echo 'KBUILD_CFLAGS += -Wno-sometimes-uninitialized' >> Makefile
+echo 'KBUILD_CFLAGS += -Wuninitialized' >> Makefile
+sed -i 's/^\([[:space:]]*const struct sde_pingpong_cfg \*pp_cfg\);/\1 = NULL;/' ../sm8450-modules/qcom/opensource/display-drivers/msm/sde/sde_rm.c
+sed -i '/^[[:space:]]*struct sys_reg_desc clidr[[:space:]]*;/s/;$/ = { 0 };/' kernel/xiaomi/sm8450/arch/arm64/kvm/sys_regs.c
