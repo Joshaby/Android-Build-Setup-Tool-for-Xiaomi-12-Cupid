@@ -7,7 +7,7 @@ echo "Cloning device/xiaomi/sm8450-common folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_sm8450-common device/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/sm8450-common..."
-git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git vendor/xiaomi/sm8450-common
+git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git -b lineage-23.0-gpu-driver-762.40 vendor/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/cupid folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_cupid.git -b lineage-23.0 vendor/xiaomi/cupid
@@ -41,14 +41,11 @@ cd kernel/xiaomi/sm8450
 patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
 
 echo "Add Wild Kernel"
-curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s wild
+curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s stable
 
 echo "Apply latest SusFS"
 # Apply core SUSFS patches
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
-cd ../../../extras/ksu/susfs
-git checkout a4c34e5877163b434a00c32b67c4e637f85a4c66
-cd ../../../kernel/xiaomi/sm8450
 
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
 cp -f ../../../extras/ksu/susfs/kernel_patches/include/linux/* include/linux
@@ -169,7 +166,6 @@ echo "Change Kernel Name"
 # Kernel name
 echo 'CONFIG_LOCALVERSION=""' >> "$defconfig"
 echo "CONFIG_LOCALVERSION_AUTO=n" >> "$defconfig"
-echo 'res="${res/-gki+/}"' >> scripts/setlocalversion
 sed -i 's/echo "$res"/res="${res\/-gki+\/}"\necho "$res-JoshaCore-WILDKSU+SUSFS"/' scripts/setlocalversion
 
 echo "Fix build for Clang r584948b(22.0.1)"
