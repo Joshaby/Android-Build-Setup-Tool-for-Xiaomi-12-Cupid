@@ -25,7 +25,7 @@ echo "Cloning hardware/dolby folder..."
 git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
 
 echo "Cloning kernel/xiaomi/sm8450 folder..."
-git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450.git kernel/xiaomi/sm8450
+git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450.git kernel/xiaomi/sm8450
 
 echo "Cloning kernel/xiaomi/sm8450-devicetrees folder..."
 git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
