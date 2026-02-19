@@ -41,7 +41,7 @@ cd kernel/xiaomi/sm8450
 patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
 
 echo "Add Wild Kernel"
-curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s stable
+curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s canary
 
 echo "Apply latest SusFS"
 # Apply core SUSFS patches
@@ -116,6 +116,10 @@ echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> "$defconfig"
 
+# KPatch Next Support
+echo "CONFIG_KALLSYMS=y" >> "$defconfig"
+echo "CONFIG_KALLSYMS_ALL=y" >> "$defconfig"
+
 # Mountify Support
 echo "CONFIG_TMPFS_XATTR=y" >> "$defconfig"
 echo "CONFIG_TMPFS_POSIX_ACL=y" >> "$defconfig"
@@ -177,3 +181,5 @@ sed -i 's/^\([[:space:]]*const struct sde_pingpong_cfg \*pp_cfg\);/\1 = NULL;/' 
 sed -i '/^[[:space:]]*struct sys_reg_desc clidr[[:space:]]*;/s/;$/ = { 0 };/' arch/arm64/kvm/sys_regs.c
 sed -i 's/const char \*name;/const char \*name = NULL;/' drivers/input/misc/qcom-hv-haptics.c
 sed -i 's/struct limits_freq_table \*cpu1_freq_table, \*cpu2_freq_table;/struct limits_freq_table *cpu1_freq_table = NULL, *cpu2_freq_table = NULL;/' drivers/thermal/qcom/cpu_voltage_cooling.c
+
+echo "Setup Complete!"
