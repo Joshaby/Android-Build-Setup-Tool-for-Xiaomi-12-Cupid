@@ -44,7 +44,6 @@ echo "Add Wild Kernel"
 curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s canary
 
 echo "Apply latest SusFS"
-# Apply core SUSFS patches
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
 
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
@@ -86,6 +85,9 @@ patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_pci_
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_irq_cpu_logspam.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_system_logspam.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/use_unlikely_wrap_cpufreq.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/unicode_bypass_fix_6.1-.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/ntsync/ntsync_base.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/ntsync/ntsync_compat_android12-5.10.patch
 
 defconfig="./arch/arm64/configs/gki_defconfig"
 
@@ -111,6 +113,7 @@ echo "CONFIG_KSU_SUSFS_SUS_OVERLAYFS=n" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> "$defconfig"
 echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> "$defconfig"
+echo "CONFIG_KSU_SUSFS_SUS_MAP=y" >> "$defconfig"
 
 # SUSFS Debugging and Security
 echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> "$defconfig"
@@ -160,6 +163,9 @@ echo "CONFIG_IP_SET_HASH_NETPORT=y" >> "$defconfig"
 echo "CONFIG_IP_SET_HASH_NETIFACE=y" >> "$defconfig"
 echo "CONFIG_IP_SET_LIST_SET=y" >> "$defconfig"
 
+# NTSync Support
+echo "CONFIG_NTSYNC=y" >> "$defconfig"
+
 # Build Optimization Configuration
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=n" >> "$defconfig"
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=y" >> "$defconfig"
@@ -170,9 +176,9 @@ echo "Change Kernel Name"
 # Kernel name
 echo 'CONFIG_LOCALVERSION=""' >> "$defconfig"
 echo "CONFIG_LOCALVERSION_AUTO=n" >> "$defconfig"
-sed -i '217s/^[[:space:]]*echo "$res"[[:space:]]*$/res="${res\/-gki+\/}"\necho "$res-JoshaCore-WILDKSU+SUSFS"/' scripts/setlocalversion
+sed -i '217s/^[[:space:]]*echo "$res"[[:space:]]*$/res="${res\/-gki+\/}"\necho "$res-JoshaCore.LTO.v7"/' scripts/setlocalversion
 
-echo "Fix build for Clang r584948b(22.0.1)"
+echo "Fix build for Clang 22.X"
 
 echo 'KBUILD_CFLAGS += -Wuninitialized' >> Makefile
 echo 'KBUILD_CFLAGS += -Wno-sometimes-uninitialized' >> Makefile
@@ -181,5 +187,15 @@ sed -i 's/^\([[:space:]]*const struct sde_pingpong_cfg \*pp_cfg\);/\1 = NULL;/' 
 sed -i '/^[[:space:]]*struct sys_reg_desc clidr[[:space:]]*;/s/;$/ = { 0 };/' arch/arm64/kvm/sys_regs.c
 sed -i 's/const char \*name;/const char \*name = NULL;/' drivers/input/misc/qcom-hv-haptics.c
 sed -i 's/struct limits_freq_table \*cpu1_freq_table, \*cpu2_freq_table;/struct limits_freq_table *cpu1_freq_table = NULL, *cpu2_freq_table = NULL;/' drivers/thermal/qcom/cpu_voltage_cooling.c
+sed -i 's/struct i2c_dev_desc \*i2cdev;/struct i2c_dev_desc *i2cdev = NULL;/' drivers/i3c/master.c
+sed -i 's/&rpdev->driver_override/(const char **)\&rpdev->driver_override/' drivers/rpmsg/rpmsg_core.c
+sed -i '72s/^/\/\//' kernel/sched/walt/sysctl.c
+sed -i 's/sched_ignore_cluster_handler/proc_dointvec/g' kernel/sched/walt/sysctl.c
+
+echo "Download Alchemist LLVM 22.X"
+
+git clone https://gitlab.com/nekoshirro/Alchemist-LLVM.git -b clang-22-LTO prebuilts/clang/host/linux-x86/clang-alchemist
+
+echo "Download complete!"
 
 echo "Setup Complete!"
