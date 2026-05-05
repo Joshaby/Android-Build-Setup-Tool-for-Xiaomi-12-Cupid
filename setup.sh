@@ -7,16 +7,16 @@ echo "Cloning device/xiaomi/sm8450-common folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_sm8450-common -b lineage-23.2 device/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/sm8450-common..."
-git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git -b lineage-23.2-gpu-driver-762.40 vendor/xiaomi/sm8450-common
+git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git -b lineage-23.2-gpu-driver-849.0 vendor/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/cupid folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_cupid.git -b lineage-23.2 vendor/xiaomi/cupid
 
 echo "Cloning vendor/xiaomi/miuicamera-cupid folder..."
-git clone https://codeberg.org/dopaemon/proprietary_vendor_xiaomi_miuicamera-cupid.git -b lineage-22.2 vendor/xiaomi/miuicamera-cupid
+git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_miuicamera-cupid.git -b lineage-23.2 vendor/xiaomi/miuicamera-cupid
 
 echo "Cloning device/xiaomi/miuicamera-cupid folder..."
-git clone https://github.com/cupid-development/android_device_xiaomi_miuicamera-cupid.git device/xiaomi/miuicamera-cupid
+git clone https://github.com/Joshaby/android_device_xiaomi_miuicamera-cupid.git -b lineage-23.2 device/xiaomi/miuicamera-cupid
 
 echo "Cloning hardware/xiaomi folder..."
 git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware/xiaomi
@@ -45,6 +45,9 @@ curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/se
 
 echo "Apply latest SusFS"
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
+cd ../../../extras/ksu/susfs
+git checkout 4b4faed83eee98be8ca8d3fd71751ce5a82cc5f2
+cd ../../../kernel/xiaomi/sm8450
 
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
 cp -f ../../../extras/ksu/susfs/kernel_patches/include/linux/* include/linux
