@@ -179,7 +179,7 @@ echo "Change Kernel Name"
 # Kernel name
 echo 'CONFIG_LOCALVERSION=""' >> "$defconfig"
 echo "CONFIG_LOCALVERSION_AUTO=n" >> "$defconfig"
-sed -i '217s/^[[:space:]]*echo "$res"[[:space:]]*$/res="${res\/-gki+\/}"\necho "$res-JoshaCore.LTO.v7"/' scripts/setlocalversion
+sed -i '217s/^[[:space:]]*echo "$res"[[:space:]]*$/res="${res\/-gki+\/}"\necho "$res"/' scripts/setlocalversion
 
 echo "Fix build for Clang 22.X"
 
