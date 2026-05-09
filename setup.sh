@@ -248,10 +248,10 @@ echo "Add MIUI Camera support"
 for d in device/xiaomi/*/; do
     folder=$(basename "$d")
     if [ "$folder" != "diting" ] && [ "$folder" != "thor" ] && [ "$folder" != "sm8450-common" ] && [ "$folder" != "miuicamera-cupid" ]; then
-        echo -e "\n# Miui Camera for cupid
+        echo -e "\n# Miui Camera
         include device/xiaomi/miuicamera-cupid/BoardConfig.mk\n" >> "${d}BoardConfig.mk"
 
-        echo -e "\n# Miui Camera for cupid
+        echo -e "\n# Miui Camera
         \$(call inherit-product, device/xiaomi/miuicamera-cupid/device.mk)\n" >> "${d}device.mk"
     fi
 done
