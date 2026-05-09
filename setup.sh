@@ -201,4 +201,8 @@ git clone https://gitlab.com/nekoshirro/Alchemist-LLVM.git -b clang-22-LTO prebu
 
 echo "Download complete!"
 
+echo "Remove duplicated Dolby Atmos app"
+cd ../../
+sed -i '/PRODUCT_PACKAGES += \\/{N;/\n    DolbyManager/d;}' hardware/dolby/dolby.mk
+
 echo "Setup Complete!"
