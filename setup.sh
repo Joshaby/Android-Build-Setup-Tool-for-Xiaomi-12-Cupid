@@ -252,7 +252,7 @@ for d in device/xiaomi/*/; do
         include device/xiaomi/miuicamera-cupid/BoardConfig.mk\n" >> "${d}BoardConfig.mk"
 
         echo -e "\n# Miui Camera for cupid
-        \$(call inherit-product, device/xiaomi/miuicamera-cupid/device.mk)n" >> "${d}device.mk"
+        \$(call inherit-product, device/xiaomi/miuicamera-cupid/device.mk)\n" >> "${d}device.mk"
     fi
 done
 
