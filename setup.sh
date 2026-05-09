@@ -1,7 +1,44 @@
 #!/bin/bash
 
+# Specific Device Tree
+
 echo "Cloning device/xiaomi/cupid folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_cupid.git -b lineage-23.2 device/xiaomi/cupid
+
+echo "Cloning vendor/xiaomi/cupid folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_cupid.git -b lineage-23.2 vendor/xiaomi/cupid
+
+echo "Cloning device/xiaomi/zeus folder..."
+git clone https://github.com/LineageOS/android_device_xiaomi_zeus.git -b lineage-23.2 device/xiaomi/zeus
+
+echo "Cloning vendor/xiaomi/zeus folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_zeus.git -b lineage-23.2 vendor/xiaomi/zeus
+
+echo "Cloning device/xiaomi/mayfly folder..."
+git clone https://github.com/LineageOS/android_device_xiaomi_mayfly.git -b lineage-23.2 device/xiaomi/mayfly
+
+echo "Cloning vendor/xiaomi/mayfly folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_mayfly.git -b lineage-23.2 vendor/xiaomi/mayfly
+
+echo "Cloning device/xiaomi/unicorn folder..."
+git clone https://github.com/LineageOS/android_device_xiaomi_unicorn.git -b lineage-23.2 device/xiaomi/unicorn
+
+echo "Cloning vendor/xiaomi/unicorn folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_unicorn.git -b lineage-23.2 vendor/xiaomi/unicorn
+
+echo "Cloning device/xiaomi/diting folder..."
+git clone https://github.com/LineageOS/android_device_xiaomi_diting.git -b lineage-23.2 device/xiaomi/diting
+
+echo "Cloning vendor/xiaomi/diting folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_diting.git -b lineage-23.2 vendor/xiaomi/diting
+
+echo "Cloning device/xiaomi/thor folder..."
+git clone https://github.com/LineageOS/android_device_xiaomi_thor.git -b lineage-23.2 device/xiaomi/thor
+
+echo "Cloning vendor/xiaomi/diting folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_thor.git -b lineage-23.2 vendor/xiaomi/thor
+
+# Common SM8450 Tree
 
 echo "Cloning device/xiaomi/sm8450-common folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_sm8450-common -b lineage-23.2 device/xiaomi/sm8450-common
@@ -9,20 +46,21 @@ git clone https://github.com/Joshaby/android_device_xiaomi_sm8450-common -b line
 echo "Cloning vendor/xiaomi/sm8450-common..."
 git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git -b lineage-23.2-gpu-driver-849.0 vendor/xiaomi/sm8450-common
 
-echo "Cloning vendor/xiaomi/cupid folder..."
-git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_cupid.git -b lineage-23.2 vendor/xiaomi/cupid
-
 echo "Cloning vendor/xiaomi/miuicamera-cupid folder..."
 git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_miuicamera-cupid.git -b lineage-23.2 vendor/xiaomi/miuicamera-cupid
 
 echo "Cloning device/xiaomi/miuicamera-cupid folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_miuicamera-cupid.git -b lineage-23.2 device/xiaomi/miuicamera-cupid
 
+# Hardware Xiaomi + Dolby
+
 echo "Cloning hardware/xiaomi folder..."
 git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware/xiaomi
 
 echo "Cloning hardware/dolby folder..."
 git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
+
+# SM8450 Kernel + DTS + Modules + KSU + SusFS + Performance Optimizations Patches
 
 echo "Cloning kernel/xiaomi/sm8450 folder..."
 git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450.git kernel/xiaomi/sm8450
