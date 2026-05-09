@@ -237,10 +237,23 @@ echo "Download Alchemist LLVM 22.X"
 
 git clone https://gitlab.com/nekoshirro/Alchemist-LLVM.git -b clang-22-LTO prebuilts/clang/host/linux-x86/clang-alchemist
 
-echo "Download complete!"
+echo "Other things"
 
 echo "Remove duplicated Dolby Atmos app"
-cd ../../
+cd ../../../
 sed -i '/PRODUCT_PACKAGES += \\/{N;/\n    DolbyManager/d;}' hardware/dolby/dolby.mk
+
+echo "Add MIUI Camera support"
+
+for d in device/xiaomi/*/; do
+    folder=$(basename "$d")
+    if [ "$folder" != "diting" ] && [ "$folder" != "thor" ] && [ "$folder" != "sm8450-common" ] && [ "$folder" != "miuicamera-cupid" ]; then
+        echo -e "\n# Miui Camera for cupid
+        include device/xiaomi/miuicamera-cupid/BoardConfig.mk\n" >> "${d}BoardConfig.mk"
+
+        echo -e "\n# Miui Camera for cupid
+        \$(call inherit-product, device/xiaomi/miuicamera-cupid/device.mk)n" >> "${d}device.mk"
+    fi
+done
 
 echo "Setup Complete!"
