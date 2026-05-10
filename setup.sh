@@ -237,11 +237,20 @@ echo "Download Alchemist LLVM 22.X"
 
 git clone https://gitlab.com/nekoshirro/Alchemist-LLVM.git -b clang-22-LTO prebuilts/clang/host/linux-x86/clang-alchemist
 
+
 echo "Other things"
 
 echo "Remove duplicated Dolby Atmos app"
 cd ../../../
 sed -i '/PRODUCT_PACKAGES += \\/{N;/\n    DolbyManager/d;}' hardware/dolby/dolby.mk
+
+echo "Download keys for ROM signing"
+
+git clone git@github.com:Joshaby/android_vendor_lineage-priv.git vendor/lineage-priv/keys
+cp vendor/lineage-priv/keys/.android-certs $HOME/
+
+echo "Download kProfiles"
+git clone https://github.com/KProfiles/android_packages_apps_KProfiles packages/apps/KProfiles
 
 echo "Add MIUI Camera support"
 
