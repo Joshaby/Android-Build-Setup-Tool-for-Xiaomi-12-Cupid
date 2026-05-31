@@ -4,20 +4,26 @@
 echo "Enter HOST, PORT, USERNAME and PASSWORD (separated by space):"
 read -p "> " SSH_HOST SSH_PORT SSH_USER SSH_PASS
 
-echo -e "\n----------------------------------------"
+echo -e "----------------------------------------\n"
 
 echo "Enter ROM name:"
 read -p "> " ROM_NAME
 
-echo -e "\n----------------------------------------"
+echo -e "----------------------------------------\n"
+
+echo "Enter ROM Folder name:"
+read -p "> " ROM_FOLDER_NAME
+
+echo -e "----------------------------------------\n"
 
 # Hardcoded list of device folders from your image
 DEVICES=("cupid" "diting" "mayfly" "thor" "unicorn" "zeus")
 IMG_FILES=("boot" "dtbo" "recovery" "vendor_boot")
 
 # Path definitions
-REMOTE_PATH="/home/joshaby/axionaosp/out/target/product"  
-LOCAL_PATH="$HOME/ROMs"                 
+REMOTE_PATH="/home/joshaby/$ROM_FOLDER_NAME/out/target/product"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")  
+LOCAL_PATH="$HOME/ROMs/$ROM_FOLDER_NAME/$TIMESTAMP"                 
 
 echo "Starting download..."
 
@@ -33,15 +39,33 @@ for DEVICE in "${DEVICES[@]}"; do
     # Download IMG files
     for IMG_FILE in "${IMG_FILES[@]}"; do
         echo "----------------------------------------"
-        echo "Downloading content from device $DEVICE - IMG File $IMG_FILE.img"
+        echo "Downloading content from device $DEVICE - $IMG_FILE.img"
         echo "From: $REMOTE_DIR"
         echo "To:   $LOCAL_DEST"
-        echo "----------------------------------------"
+        echo -e "----------------------------------------"
 
         # Download IMG file
         sshpass -p "$SSH_PASS" scp -P "$SSH_PORT" -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST:$REMOTE_DIR/$IMG_FILE.img" "$LOCAL_DEST/"
+
+        if [ $? -eq 0 ]; then
+            echo -e "Success!\n"
+        else
+            echo -e "Error: Failed to download!\n"
+        fi
     done
 
-    # Download ROM file 
+    echo "----------------------------------------"
+    echo "Downloading content from device $DEVICE - $ROM_NAME*$DEVICE.zip"
+    echo "From: $REMOTE_DIR"
+    echo "To:   $LOCAL_DEST"
+    echo -e "----------------------------------------"
+
+    # Download ROM file
     sshpass -p "$SSH_PASS" scp -P "$SSH_PORT" -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST:$REMOTE_DIR/$ROM_NAME*$DEVICE*.zip" "$LOCAL_DEST/"
+
+    if [ $? -eq 0 ]; then
+        echo -e "Success!\n"
+    else
+        echo -e "Error: Failed to download!\n"
+    fi
 done
