@@ -38,13 +38,13 @@ git clone https://github.com/LineageOS/android_device_xiaomi_thor.git -b lineage
 echo "Cloning vendor/xiaomi/diting folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_thor.git -b lineage-23.2 vendor/xiaomi/thor
 
-# Common SM8450 Tree
+# Common SM8450 Tree + MIUI/HyperOS Camera
 
 echo "Cloning device/xiaomi/sm8450-common folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_sm8450-common -b lineage-23.2 device/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/sm8450-common..."
-git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git -b lineage-23.2-gpu-driver-849.0 vendor/xiaomi/sm8450-common
+git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_sm8450-common.git -b lineage-23.2-gpu-driver-863.1 vendor/xiaomi/sm8450-common
 
 echo "Cloning vendor/xiaomi/miuicamera-cupid folder..."
 git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_miuicamera-cupid.git -b lineage-23.2 vendor/xiaomi/miuicamera-cupid
@@ -60,16 +60,16 @@ git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware
 echo "Cloning hardware/dolby folder..."
 git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
 
-# SM8450 Kernel + DTS + Modules + KSU + SusFS + Performance Optimizations Patches
+# SM8450 Kernel + DTS + Modules + KSU Next + SusFS + Performance Optimizations Patches
 
 echo "Cloning kernel/xiaomi/sm8450 folder..."
-git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450.git kernel/xiaomi/sm8450
+git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450_test.git kernel/xiaomi/sm8450
 
 echo "Cloning kernel/xiaomi/sm8450-devicetrees folder..."
-git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
+git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
 
 echo "Cloning kernel/xiaomi/sm8450-modules folder..."
-git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450-modules.git kernel/xiaomi/sm8450-modules
+git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450-modules.git kernel/xiaomi/sm8450-modules
 
 echo "Cloning Wild Kernel Patches"
 git clone https://github.com/WildKernels/kernel_patches.git extras/ksu/wild-kernel-patches
@@ -78,14 +78,11 @@ echo "Apply ptrace patch for older kernels"
 cd kernel/xiaomi/sm8450
 patch -p1 -F 3 < ../../../extras/ksu/wild-kernel-patches/gki_ptrace.patch
 
-echo "Add Wild Kernel"
-curl -LSs "https://raw.githubusercontent.com/WildKernels/Wild_KSU/wild/kernel/setup.sh" | bash -s canary
+echo "Add KernelSU Next Kernel"
+curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
 
 echo "Apply latest SusFS"
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android12-5.10 ../../../extras/ksu/susfs
-cd ../../../extras/ksu/susfs
-git checkout 4b4faed83eee98be8ca8d3fd71751ce5a82cc5f2
-cd ../../../kernel/xiaomi/sm8450
 
 cp -f ../../../extras/ksu/susfs/kernel_patches/fs/* fs
 cp -f ../../../extras/ksu/susfs/kernel_patches/include/linux/* include/linux
@@ -99,6 +96,9 @@ echo "Apply BBG support"
 cd ..
 curl -LSs https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh | bash
 sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/selinux/selinux,baseband_guard/ } }' security/Kconfig
+
+echo "Apply LRNG v59"
+git clone --depth=1 https://github.com/smuellerDD/lrng.git drivers/char/lrng/
 
 echo "Apply Kernel Configuration Flags and Performance Optimizations Patches"
 
@@ -114,18 +114,18 @@ patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/mem_opt_pre
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/minimise_wakeup_time.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_freeze_timeout.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_gc_thread_sleep_time.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_limitation_scaling_min_freq.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/adjust_cpu_scan_order.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_limitation_scaling_min_freq.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/adjust_cpu_scan_order.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/avoid_extra_s2idle_wake_attempts.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/disable_cache_hot_buddy.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/f2fs_enlarge_min_fsync_blocks.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_ext4_default_commit_age.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_sk_mem_packets.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/re_write_limitation_scaling_min_freq.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/re_write_limitation_scaling_min_freq.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_pci_pme_wakeups.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_irq_cpu_logspam.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_system_logspam.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/use_unlikely_wrap_cpufreq.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/use_unlikely_wrap_cpufreq.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/unicode_bypass_fix_6.1-.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/ntsync/ntsync_base.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/ntsync/ntsync_compat_android12-5.10.patch
@@ -168,21 +168,30 @@ echo "CONFIG_KALLSYMS_ALL=y" >> "$defconfig"
 echo "CONFIG_TMPFS_XATTR=y" >> "$defconfig"
 echo "CONFIG_TMPFS_POSIX_ACL=y" >> "$defconfig"
 
-#BBG
+# BBG
 echo "CONFIG_BBG=y" >> "$defconfig"
+
+# LRNG v59
+echo "CONFIG_LRNG=y" >> "$defconfig"
+echo "CONFIG_LRNG_SHA256=y" >> "$defconfig"
+echo "CONFIG_LRNG_COLLECTION_SIZE=1024" >> "$defconfig"
+echo "CONFIG_LRNG_HEALTH_TESTS=y" >> "$defconfig"
+echo "CONFIG_LRNG_RCT_CUTOFF=31" >> "$defconfig"
+echo "CONFIG_LRNG_APT_CUTOFF=325" >> "$defconfig"
+echo "CONFIG_LRNG_IRQ=y" >> "$defconfig"
+echo "CONFIG_LRNG_CONTINUOUS_COMPRESSION_ENABLED=y" >> "$defconfig"
 
 # Networking Configuration
 echo "CONFIG_IP_NF_TARGET_TTL=y" >> "$defconfig"
 echo "CONFIG_IP6_NF_TARGET_HL=y" >> "$defconfig"
 echo "CONFIG_IP6_NF_MATCH_HL=y" >> "$defconfig"
 
-# BBR TCP Congestion Control
+# Add more TCP Congestion Control
 echo "CONFIG_TCP_CONG_ADVANCED=y" >> "$defconfig"
-echo "CONFIG_TCP_CONG_BBR=y" >> "$defconfig"
 echo "CONFIG_NET_SCH_FQ=y" >> "$defconfig"
-echo "CONFIG_TCP_CONG_BIC=n" >> "$defconfig"
-echo "CONFIG_TCP_CONG_WESTWOOD=n" >> "$defconfig"
-echo "CONFIG_TCP_CONG_HTCP=n" >> "$defconfig"
+echo "CONFIG_TCP_CONG_BIC=y" >> "$defconfig"
+echo "CONFIG_TCP_CONG_WESTWOOD=y" >> "$defconfig"
+echo "CONFIG_TCP_CONG_HTCP=y" >> "$defconfig"
 
 # IPSet Support
 echo "CONFIG_IP_SET=y" >> "$defconfig"
@@ -207,10 +216,14 @@ echo "CONFIG_IP_SET_LIST_SET=y" >> "$defconfig"
 # NTSync Support
 echo "CONFIG_NTSYNC=y" >> "$defconfig"
 
+# Configure ZRAM Writeback - Better memory management
+echo "CONFIG_ZRAM_WRITEBACK=y" >> "$defconfig"
+echo "CONFIG_ZRAM_MEMORY_TRACKING=y" >> "$defconfig"
+
 # Build Optimization Configuration
-echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=n" >> "$defconfig"
-echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=y" >> "$defconfig"
-echo "CONFIG_OPTIMIZE_INLINING=y" >> "$defconfig"
+echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
+echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=n" >> "$defconfig"
+# echo "CONFIG_OPTIMIZE_INLINING=y" >> "$defconfig"
 
 echo "Change Kernel Name"
 
@@ -224,10 +237,7 @@ echo "Fix build for Clang 22.X"
 echo 'KBUILD_CFLAGS += -Wuninitialized' >> Makefile
 echo 'KBUILD_CFLAGS += -Wno-sometimes-uninitialized' >> Makefile
 echo 'KBUILD_CFLAGS += -Wuninitialized' >> Makefile
-sed -i 's/^\([[:space:]]*const struct sde_pingpong_cfg \*pp_cfg\);/\1 = NULL;/' ../sm8450-modules/qcom/opensource/display-drivers/msm/sde/sde_rm.c
 sed -i '/^[[:space:]]*struct sys_reg_desc clidr[[:space:]]*;/s/;$/ = { 0 };/' arch/arm64/kvm/sys_regs.c
-sed -i 's/const char \*name;/const char \*name = NULL;/' drivers/input/misc/qcom-hv-haptics.c
-sed -i 's/struct limits_freq_table \*cpu1_freq_table, \*cpu2_freq_table;/struct limits_freq_table *cpu1_freq_table = NULL, *cpu2_freq_table = NULL;/' drivers/thermal/qcom/cpu_voltage_cooling.c
 sed -i 's/struct i2c_dev_desc \*i2cdev;/struct i2c_dev_desc *i2cdev = NULL;/' drivers/i3c/master.c
 sed -i 's/&rpdev->driver_override/(const char **)\&rpdev->driver_override/' drivers/rpmsg/rpmsg_core.c
 sed -i '72s/^/\/\//' kernel/sched/walt/sysctl.c
@@ -237,22 +247,21 @@ echo "Download Alchemist LLVM 22.X"
 
 git clone https://gitlab.com/nekoshirro/Alchemist-LLVM.git -b clang-22-LTO prebuilts/clang/host/linux-x86/clang-alchemist
 
-
 echo "Other things"
 
 echo "Remove duplicated Dolby Atmos app"
 cd ../../../
 sed -i '/PRODUCT_PACKAGES += \\/{N;/\n    DolbyManager/d;}' hardware/dolby/dolby.mk
 
-echo "Download keys for ROM signing"
+# echo "Download keys for ROM signing"
 
-git clone git@github.com:Joshaby/android_vendor_lineage-priv.git vendor/lineage-priv/keys
-cp vendor/lineage-priv/keys/.android-certs $HOME/
+# git clone git@github.com:Joshaby/android_vendor_lineage-priv.git vendor/lineage-priv/keys
+# cp -rf vendor/lineage-priv/keys/.android-certs $HOME/
 
 echo "Download kProfiles"
 git clone https://github.com/KProfiles/android_packages_apps_KProfiles packages/apps/KProfiles
 
-echo "Add MIUI Camera support"
+# echo "Add MIUI Camera support"
 
 for d in device/xiaomi/*/; do
     folder=$(basename "$d")
