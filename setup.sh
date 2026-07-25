@@ -60,10 +60,10 @@ git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware
 echo "Cloning hardware/dolby folder..."
 git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
 
-# SM8450 Kernel + DTS + Modules + KSU Next + SusFS + Performance Optimizations Patches
+## SM8450 Kernel + DTS + Modules + KSU Next + SusFS + Performance Optimizations Patches
 
 echo "Cloning kernel/xiaomi/sm8450 folder..."
-git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450_test.git kernel/xiaomi/sm8450
+git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450_test.git -b lineage-23.2 kernel/xiaomi/sm8450
 
 echo "Cloning kernel/xiaomi/sm8450-devicetrees folder..."
 git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
@@ -114,18 +114,18 @@ patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/mem_opt_pre
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/minimise_wakeup_time.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_freeze_timeout.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_gc_thread_sleep_time.patch
-# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_limitation_scaling_min_freq.patch
-# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/adjust_cpu_scan_order.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_limitation_scaling_min_freq.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/adjust_cpu_scan_order.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/avoid_extra_s2idle_wake_attempts.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/disable_cache_hot_buddy.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/f2fs_enlarge_min_fsync_blocks.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_ext4_default_commit_age.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_sk_mem_packets.patch
-# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/re_write_limitation_scaling_min_freq.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/re_write_limitation_scaling_min_freq.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_pci_pme_wakeups.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_irq_cpu_logspam.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/silence_system_logspam.patch
-# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/use_unlikely_wrap_cpufreq.patch
+patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/use_unlikely_wrap_cpufreq.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/unicode_bypass_fix_6.1-.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/ntsync/ntsync_base.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/ntsync/ntsync_compat_android12-5.10.patch
@@ -219,6 +219,18 @@ echo "CONFIG_NTSYNC=y" >> "$defconfig"
 # Configure ZRAM Writeback - Better memory management
 echo "CONFIG_ZRAM_WRITEBACK=y" >> "$defconfig"
 echo "CONFIG_ZRAM_MEMORY_TRACKING=y" >> "$defconfig"
+
+# Droidspaces support
+echo "CONFIG_POSIX_MQUEUE=y" >> "$defconfig"
+echo "CONFIG_IPC_NS=y" >> "$defconfig"
+echo "CONFIG_PID_NS=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_IP=y" >> "$defconfig"
+echo "CONFIG_IP_SET_HASH_NET=y" >> "$defconfig"
+echo "CONFIG_NETFILTER_XT_TARGET_LOG=y" >> "$defconfig" 
+echo "CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y" >> "$defconfig"
+echo "CONFIG_NETFILTER_XT_MATCH_RECENT=y" >> "$defconfig"
+echo "CONFIG_NETFILTER_XT_SET=y" >> "$defconfig"
+echo "CONFIG_DEVTMPFS=y" >> "$defconfig"
 
 # Build Optimization Configuration
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
