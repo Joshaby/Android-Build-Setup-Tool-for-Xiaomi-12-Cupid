@@ -2,41 +2,47 @@
 
 # Specific Device Tree
 
-echo "Cloning device/xiaomi/cupid folder..."
+echo "Cloning device/xiaomi/cupid - Xiaomi 12 folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_cupid.git -b lineage-23.2 device/xiaomi/cupid
 
-echo "Cloning vendor/xiaomi/cupid folder..."
+echo "Cloning vendor/xiaomi/cupid - Xiaomi 12 folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_cupid.git -b lineage-23.2 vendor/xiaomi/cupid
 
-echo "Cloning device/xiaomi/zeus folder..."
+echo "Cloning device/xiaomi/zeus - Xiaomi 12 Pro folder..."
 git clone https://github.com/LineageOS/android_device_xiaomi_zeus.git -b lineage-23.2 device/xiaomi/zeus
 
-echo "Cloning vendor/xiaomi/zeus folder..."
+echo "Cloning vendor/xiaomi/zeus - Xiaomi 12 Pro folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_zeus.git -b lineage-23.2 vendor/xiaomi/zeus
 
-echo "Cloning device/xiaomi/mayfly folder..."
+echo "Cloning device/xiaomi/mayfly - Xiaomi 12S folder..."
 git clone https://github.com/LineageOS/android_device_xiaomi_mayfly.git -b lineage-23.2 device/xiaomi/mayfly
 
-echo "Cloning vendor/xiaomi/mayfly folder..."
+echo "Cloning vendor/xiaomi/mayfly - Xiaomi 12S folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_mayfly.git -b lineage-23.2 vendor/xiaomi/mayfly
 
-echo "Cloning device/xiaomi/unicorn folder..."
+echo "Cloning device/xiaomi/unicorn - Xiaomi 12S Pro folder..."
 git clone https://github.com/LineageOS/android_device_xiaomi_unicorn.git -b lineage-23.2 device/xiaomi/unicorn
 
-echo "Cloning vendor/xiaomi/unicorn folder..."
+echo "Cloning vendor/xiaomi/unicorn - Xiaomi 12S Pro folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_unicorn.git -b lineage-23.2 vendor/xiaomi/unicorn
 
-echo "Cloning device/xiaomi/diting folder..."
+echo "Cloning device/xiaomi/diting - Xiaomi 12T Pro folder..."
 git clone https://github.com/LineageOS/android_device_xiaomi_diting.git -b lineage-23.2 device/xiaomi/diting
 
-echo "Cloning vendor/xiaomi/diting folder..."
+echo "Cloning vendor/xiaomi/diting - Xiaomi 12T Pro folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_diting.git -b lineage-23.2 vendor/xiaomi/diting
 
-echo "Cloning device/xiaomi/thor folder..."
+echo "Cloning device/xiaomi/thor - Xiaomi 12S Ultra folder..."
 git clone https://github.com/LineageOS/android_device_xiaomi_thor.git -b lineage-23.2 device/xiaomi/thor
 
-echo "Cloning vendor/xiaomi/diting folder..."
+echo "Cloning vendor/xiaomi/thor - Xiaomi 12S Ultra  folder..."
 git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_thor.git -b lineage-23.2 vendor/xiaomi/thor
+
+echo "Cloning device/xiaomi/mondrian - Poco F5 Pro folder..."
+git clone https://github.com/LineageOS/android_device_xiaomi_mondrian.git -b lineage-23.2 device/xiaomi/mondrian
+
+echo "Cloning vendor/xiaomi/mondrian - Poco F5 Pro folder..."
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_mondrian.git -b lineage-23.2 vendor/xiaomi/mondrian
 
 # Common SM8450 Tree + MIUI/HyperOS Camera
 
