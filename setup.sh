@@ -60,10 +60,10 @@ git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware
 echo "Cloning hardware/dolby folder..."
 git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
 
-## SM8450 Kernel + DTS + Modules + KSU Next + SusFS + Performance Optimizations Patches
+# SM8450 Kernel + DTS + Modules + KSU Next + SusFS + Performance Optimizations Patches
 
 echo "Cloning kernel/xiaomi/sm8450 folder..."
-git clone https://github.com/Joshaby/android_kernel_xiaomi_sm8450_test.git -b lineage-23.2 kernel/xiaomi/sm8450
+git clone https://github.com/Joshabys-Xiaomi-12-Org/android_kernel_xiaomi_sm8450_test.git -b lineage-23.2 kernel/xiaomi/sm8450
 
 echo "Cloning kernel/xiaomi/sm8450-devicetrees folder..."
 git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8450-devicetrees.git kernel/xiaomi/sm8450-devicetrees
@@ -99,6 +99,11 @@ sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/se
 
 echo "Apply LRNG v59"
 git clone --depth=1 https://github.com/smuellerDD/lrng.git drivers/char/lrng/
+
+echo "Apply SYSVIPC kABI fix for Droidspaces"
+git clone --depth=1 https://github.com/ravindu644/Droidspaces-OSS.git droidspaces
+patch -p1 < droidspaces/Documentation/resources/kernel-patches/GKI/below-kernel-6.12/001.GKI-below-6.12-fix_sysvipc_kabi_6_7_8.patch
+patch -p1 < droidspaces/Documentation/resources/kernel-patches/GKI/below-kernel-6.12/002.5.10_or_lower_use_android_abi_padding_for_posix_mqueue.patch 
 
 echo "Apply Kernel Configuration Flags and Performance Optimizations Patches"
 
@@ -168,6 +173,9 @@ echo "CONFIG_KALLSYMS_ALL=y" >> "$defconfig"
 echo "CONFIG_TMPFS_XATTR=y" >> "$defconfig"
 echo "CONFIG_TMPFS_POSIX_ACL=y" >> "$defconfig"
 
+# Enable OverlayFS Support
+echo "CONFIG_OVERLAY_FS=y" >> "$defconfig"
+
 # BBG
 echo "CONFIG_BBG=y" >> "$defconfig"
 
@@ -192,6 +200,23 @@ echo "CONFIG_NET_SCH_FQ=y" >> "$defconfig"
 echo "CONFIG_TCP_CONG_BIC=y" >> "$defconfig"
 echo "CONFIG_TCP_CONG_WESTWOOD=y" >> "$defconfig"
 echo "CONFIG_TCP_CONG_HTCP=y" >> "$defconfig"
+echo "CONFIG_TCP_CONG_CUBIC=y" >> "$defconfig"
+
+# Enable Traffic Shaping (Qdisc) Configs
+echo "CONFIG_NET_SCH_FQ=y" >> "$defconfig"
+echo "CONFIG_NET_SCH_FQ_CODEL=y" >> "$defconfig"
+echo "CONFIG_NET_SCH_CAKE=y" >> "$defconfig"
+
+# Enable Connection Marking Configs
+echo "CONFIG_NET_ACT_CONNMARK=y" >> "$defconfig"
+
+# Enable TTL/Hop Limit Target Configs
+echo "CONFIG_IP_NF_TARGET_TTL=y" >> "$defconfig"
+echo "CONFIG_IP6_NF_TARGET_HL=y" >> "$defconfig"
+echo "CONFIG_IP6_NF_MATCH_HL=y" >> "$defconfig"
+
+# Enable Wireguard VPN Configs
+echo "CONFIG_WIREGUARD=y" >> "$defconfig"
 
 # IPSet Support
 echo "CONFIG_IP_SET=y" >> "$defconfig"
@@ -212,6 +237,11 @@ echo "CONFIG_IP_SET_HASH_NETNET=y" >> "$defconfig"
 echo "CONFIG_IP_SET_HASH_NETPORT=y" >> "$defconfig"
 echo "CONFIG_IP_SET_HASH_NETIFACE=y" >> "$defconfig"
 echo "CONFIG_IP_SET_LIST_SET=y" >> "$defconfig"
+echo "CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y" >> "$defconfig"
+echo "CONFIG_NETFILTER_XT_SET=y" >> "$defconfig"
+echo "CONFIG_NETFILTER_XT_TARGET_LOG=y" >> "$defconfig" 
+echo "CONFIG_NETFILTER_XT_MATCH_RECENT=y" >> "$defconfig"
+echo "CONFIG_IP6_NF_TARGET_MASQUERADE=y" >> "$defconfig"
 
 # NTSync Support
 echo "CONFIG_NTSYNC=y" >> "$defconfig"
@@ -221,16 +251,14 @@ echo "CONFIG_ZRAM_WRITEBACK=y" >> "$defconfig"
 echo "CONFIG_ZRAM_MEMORY_TRACKING=y" >> "$defconfig"
 
 # Droidspaces support
-echo "CONFIG_POSIX_MQUEUE=y" >> "$defconfig"
 echo "CONFIG_IPC_NS=y" >> "$defconfig"
 echo "CONFIG_PID_NS=y" >> "$defconfig"
-echo "CONFIG_IP_SET_HASH_IP=y" >> "$defconfig"
-echo "CONFIG_IP_SET_HASH_NET=y" >> "$defconfig"
-echo "CONFIG_NETFILTER_XT_TARGET_LOG=y" >> "$defconfig" 
-echo "CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y" >> "$defconfig"
-echo "CONFIG_NETFILTER_XT_MATCH_RECENT=y" >> "$defconfig"
-echo "CONFIG_NETFILTER_XT_SET=y" >> "$defconfig"
+echo "CONFIG_POSIX_MQUEUE=y" >> "$defconfig"
+echo "CONFIG_IPC_NS=y" >> "$defconfig"
 echo "CONFIG_DEVTMPFS=y" >> "$defconfig"
+echo "CONFIG_BINFMT_MISC=y" >> "$defconfig"
+echo "CONFIG_BINFMT_SCRIPT=y" >> "$defconfig"
+echo "CONFIG_BINFMT_ELF=y" >> "$defconfig"
 
 # Build Optimization Configuration
 echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> "$defconfig"
