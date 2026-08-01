@@ -116,18 +116,18 @@ echo "Apply Kernel Configuration Flags and Performance Optimizations Patches"
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/optimized_mem_operations.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/file_struct_8bytes_align.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_cache_pressure.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/clear_page_16bytes_align.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_timeout_wakelocks_globally.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/f2fs_reduce_congestion.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/force_tcp_nodelay.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/int_sqrt.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/mem_opt_prefetch.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/minimise_wakeup_time.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_freeze_timeout.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/minimise_wakeup_time.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_freeze_timeout.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/reduce_gc_thread_sleep_time.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/add_limitation_scaling_min_freq.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/adjust_cpu_scan_order.patch
-patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/avoid_extra_s2idle_wake_attempts.patch
+# patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/avoid_extra_s2idle_wake_attempts.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/disable_cache_hot_buddy.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/f2fs_enlarge_min_fsync_blocks.patch
 patch -p1 --forward < ../../../extras/ksu/wild-kernel-patches/common/increase_ext4_default_commit_age.patch
@@ -278,7 +278,7 @@ echo 'CONFIG_LOCALVERSION=""' >> "$defconfig"
 echo "CONFIG_LOCALVERSION_AUTO=n" >> "$defconfig"
 sed -i '217s/^[[:space:]]*echo "$res"[[:space:]]*$/res="${res\/-gki+\/}"\necho "$res"/' scripts/setlocalversion
 
-echo "Fix build for Clang 22.X"
+echo "Fix build for newer Clang"
 
 echo 'KBUILD_CFLAGS += -Wuninitialized' >> Makefile
 echo 'KBUILD_CFLAGS += -Wno-sometimes-uninitialized' >> Makefile
@@ -292,6 +292,11 @@ sed -i 's/sched_ignore_cluster_handler/proc_dointvec/g' kernel/sched/walt/sysctl
 echo "Download Alchemist LLVM 22.X"
 
 git clone https://gitlab.com/nekoshirro/Alchemist-LLVM.git -b clang-22-LTO prebuilts/clang/host/linux-x86/clang-alchemist
+
+echo "Download GreenForce Clang 24"
+wget -P prebuilts/clang/host/linux-x86 https://github.com/greenforce-project/greenforce_clang/releases/download/20260727/gf-clang-24.0.0-20260727.tar.gz
+tar -xvzf prebuilts/clang/host/linux-x86/gf-clang-24.0.0-20260727.tar.gz -C prebuilts/clang/host/linux-x86/clang-greenforce
+ln -rs prebuilts/clang/host/linux-x86/clang-r574158/lib/clang/21/lib/x86_64-unknown-linux-gnu prebuilts/clang/host/linux-x86/clang-greenforce/lib/clang/24/lib/x86_64-unknown-linux-gnu 
 
 echo "Other things"
 
