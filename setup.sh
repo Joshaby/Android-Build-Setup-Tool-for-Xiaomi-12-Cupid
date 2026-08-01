@@ -58,13 +58,13 @@ git clone https://github.com/Joshaby/proprietary_vendor_xiaomi_miuicamera-cupid.
 echo "Cloning device/xiaomi/miuicamera-cupid folder..."
 git clone https://github.com/Joshaby/android_device_xiaomi_miuicamera-cupid.git -b lineage-23.2 device/xiaomi/miuicamera-cupid
 
-# Hardware Xiaomi + Dolby
+# Hardware Xiaomi + Dolby Atmos(LunarisDolby) + Dolby Vision
 
 echo "Cloning hardware/xiaomi folder..."
-git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka hardware/xiaomi
+git clone https://github.com/Evolution-X-Devices/hardware_xiaomi -b bka-no-dolby hardware/xiaomi
 
 echo "Cloning hardware/dolby folder..."
-git clone https://github.com/rk134/hardware_dolby.git -b 15-ximi hardware/dolby
+git clone https://github.com/Evolution-X-Devices/hardware_dolby.git -b bka-aospa hardware/dolby
 
 # SM8450 Kernel + DTS + Modules + KSU Next + SusFS + Performance Optimizations Patches
 
