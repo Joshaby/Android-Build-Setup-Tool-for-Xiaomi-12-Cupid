@@ -316,7 +316,7 @@ git clone https://github.com/KProfiles/android_packages_apps_KProfiles packages/
 
 for d in device/xiaomi/*/; do
     folder=$(basename "$d")
-    if [ "$folder" != "diting" ] && [ "$folder" != "thor" ] && [ "$folder" != "sm8450-common" ] && [ "$folder" != "miuicamera-cupid" ]; then
+    if [ "$folder" != "sm8450-common" ] && [ "$folder" != "miuicamera-cupid" ]; then
         echo -e "\n# Miui Camera
         include device/xiaomi/miuicamera-cupid/BoardConfig.mk\n" >> "${d}BoardConfig.mk"
 
